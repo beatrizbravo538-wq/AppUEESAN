@@ -1,25 +1,26 @@
 package dev.eamoretti.appue.presentation.home
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import coil.compose.rememberAsyncImagePainter
+import androidx.lifecycle.viewmodel.compose.viewModel
+import dev.eamoretti.appue.data.local.AppDataBase
+import dev.eamoretti.appue.data.local.FavoriteCountryEntity
 import dev.eamoretti.appue.data.model.CountryModel
+import dev.eamoretti.appue.data.repository.FavoriteRepository
+import dev.eamoretti.appue.presentation.components.CountryList
+import dev.eamoretti.appue.presentation.favorites.FavoritesViewModel
+import dev.eamoretti.appue.presentation.favorites.FavoritesViewModelFactory
 
 val mockCountries = listOf(
     CountryModel("Colombia", 8,"https://flagcdn.com/w320/co.png"),
@@ -31,8 +32,17 @@ val mockCountries = listOf(
 )
 
 @Composable
-fun HomeScreen(navController: NavHostController)
+fun HomeScreen()
 {
+    val context = LocalContext.current
+    val db = remember { AppDataBase.getInstance(context) }
+    val repository = remember { FavoriteRepository(db.favoriteCountryDao) }
+    val viewModel: FavoritesViewModel = viewModel (factory = FavoritesViewModelFactory(repository))
+
+    val favorites by viewModel.favorites.collectAsState()
+
+    val favoriteNames = favorites.map { it.name }
+
     Spacer(modifier = Modifier.height(8.dp))
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -41,29 +51,23 @@ fun HomeScreen(navController: NavHostController)
         //Bienvenido a la pantalla principal
         Text(text = "Ranking FIFA 2025")
         Spacer(modifier = Modifier.height(8.dp))
-
-        LazyColumn {
-            items(mockCountries){ country ->
-
-                Card(
-                    modifier = Modifier.fillMaxSize().padding(vertical =8.dp)
-                ){
-                    Row(modifier = Modifier.padding(12.dp)) {
-                        Image(
-                            contentDescription = country.name,
-                            modifier = Modifier.size(64.dp),
-                            contentScale = ContentScale.Crop,
-                            painter = rememberAsyncImagePainter(country.imageURL)
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Column{
-                            Text(text = country.name, style = MaterialTheme.typography.titleMedium)
-                            Text(text = "Ranking FIFA: ${country.ranking}")
-                        }
+        CountryList(
+            countries = mockCountries,
+            favoriteCountries = favoriteNames,
+            onToggleFavorite = { country ->
+                val isFav  = favoriteNames.contains(country.name)
+                if (isFav) {
+                    favorites.find {it.name == country.name}?.let {
+                        viewModel.deleteFavorite(it)
                     }
+                } else {
+                    viewModel.insertFavorite(
+                        FavoriteCountryEntity(name = country.name
+                            , ranking = country.ranking
+                            , imageURL = country.imageURL)
+                    )
                 }
             }
-        }
-
+        )
     }
 }
