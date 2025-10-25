@@ -12,8 +12,7 @@ import kotlinx.coroutines.launch
 class FavoritesViewModel
     (private val repository: FavoriteRepository) : ViewModel() {
 
-    val favorites: StateFlow<List<FavoriteCountryEntity>>
-    = repository.getAll().stateIn(
+    val favorites: StateFlow<List<FavoriteCountryEntity>> = repository.getAll().stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(5000),
         emptyList()
     )
@@ -29,3 +28,4 @@ class FavoritesViewModel
             repository.delete(country)
         }
     }
+}

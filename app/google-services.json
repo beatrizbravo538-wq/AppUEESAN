@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "164147805385",
+    "project_id": "bbravo-firebase-2025",
+    "storage_bucket": "bbravo-firebase-2025.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:164147805385:android:a2a53139dc3b76ffc26118",
+        "android_client_info": {
+          "package_name": "dev.eamoretti.appue"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8nETqPOWQ67hO24Lvh4QLs91r_5d2Rmg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:164147805385:android:cbbe2a0a67dcde51c26118",
+        "android_client_info": {
+          "package_name": "devv.eamoretti.appue"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8nETqPOWQ67hO24Lvh4QLs91r_5d2Rmg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

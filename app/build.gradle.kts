@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("kotlin-kapt")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -10,7 +11,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "dev.eamoretti.appue"
+        applicationId = "devv.eamoretti.appue"
         minSdk = 33
         targetSdk = 36
         versionCode = 1
@@ -42,6 +43,18 @@ android {
 
 dependencies {
 
+    // --- CAMBIOS AQUÍ ---
+    // 1. El BOM (Bill of Materials) de Firebase se movió al inicio.
+    //    Esto permite que Firebase controle las versiones de sus bibliotecas.
+    implementation(platform("com.google.firebase:firebase-bom:34.4.0"))
+
+    // 2. Se usan los nombres directos (strings) en lugar de 'libs.'
+    //    Esto evita el error de la versión antigua "20.0.2" que tenías.
+    //implementation("com.google.firebase:firebase-auth-ktx")
+   // implementation("com.google.firebase:firebase-firestore-ktx")
+    // --------------------
+
+    // Dependencias de AndroidX y Compose (sin cambios)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -50,6 +63,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
